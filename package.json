@@ -1,25 +1,26 @@
 {
-  "name": "multifunctional-line-bot",
-  "version": "1.0.0",
-  "description": "LINE 上で多くの機能を提供する bot。",
-  "main": "index.ts",
-  "repository": "https://github.com/takejohn/multifunctional-line-bot.git",
-  "author": "Takejohn (https://github.com/takejohn)",
-  "license": "MIT",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "start": "npx tsx ."
-  },
-  "dependencies": {
-    "@line/bot-sdk": "^8.4.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.20",
-    "tsx": "^4.7.1",
-    "typescript": "^5.4.2"
-  },
-  "workspaces": [
-    "setup"
-  ]
+    "name": "multifunctional-line-bot",
+    "version": "1.0.0",
+    "description": "LINE 上で多くの機能を提供する bot。",
+    "main": "index.ts",
+    "repository": "https://github.com/takejohn/multifunctional-line-bot.git",
+    "author": "Takejohn (https://github.com/takejohn)",
+    "license": "MIT",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "start": "npx tsx ."
+    },
+    "dependencies": {
+        "@line/bot-sdk": "^8.4.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.20",
+        "prettier": "^3.2.5",
+        "tsx": "^4.7.1",
+        "typescript": "^5.4.2"
+    },
+    "workspaces": [
+        "setup"
+    ]
 }

@@ -33,17 +33,20 @@ export class BadRequestError extends Error implements BadRequestErrorData {
     }
 }
 
-export async function issueChannelAccessTokenV2_1(clientAssertion: string): Promise<ChannelAccessTokenV2_1> {
+export async function issueChannelAccessTokenV2_1(
+    clientAssertion: string,
+): Promise<ChannelAccessTokenV2_1> {
     const res = await fetch('https://api.line.me/oauth2/v2.1/token', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
             grant_type: 'client_credentials',
-            client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
-            client_assertion: clientAssertion
-        })
+            client_assertion_type:
+                'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+            client_assertion: clientAssertion,
+        }),
     });
     if (!res.ok) {
         throw new BadRequestError(await res.json());

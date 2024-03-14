@@ -1,17 +1,17 @@
 {
-  "name": "setup",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
-  "devDependencies": {
-    "@types/node-jose": "^1.1.13"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "node-jose": "^2.2.0"
-  }
+    "name": "setup",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node-jose": "^1.1.13"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "node-jose": "^2.2.0"
+    }
 }

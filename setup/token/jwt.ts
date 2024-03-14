@@ -16,7 +16,10 @@ interface Payload {
     token_exp: number;
 }
 
-export async function generateJwt(interaction: Interaction, { privateKey, kid } : AssertionSigningKey) {
+export async function generateJwt(
+    interaction: Interaction,
+    { privateKey, kid }: AssertionSigningKey,
+) {
     const header = createHeader(kid);
     const payload = createPayload(await interaction.getChannelId());
     return await createSignature(header, payload, privateKey);
@@ -26,7 +29,7 @@ function createHeader(kid: string): Header {
     return {
         alg: 'RS256',
         typ: 'JWT',
-        kid
+        kid,
     };
 }
 
@@ -36,15 +39,22 @@ function createPayload(channelId: string): Payload {
         sub: channelId,
         aud: 'https://api.line.me/',
         exp: Math.floor(new Date().getTime() / 1000) + 60 * 30,
-        token_exp: 60,  // TODO: 有効期間を設定できるように
+        token_exp: 60, // TODO: 有効期間を設定できるように
     };
 }
 
-async function createSignature(header: Header, payload: Payload, privateKeyString: string) {
-    return await JWS.createSign({
-        format: 'compact',
-        fields: header
-    }, JSON.parse(privateKeyString))
+async function createSignature(
+    header: Header,
+    payload: Payload,
+    privateKeyString: string,
+) {
+    return await JWS.createSign(
+        {
+            format: 'compact',
+            fields: header,
+        },
+        JSON.parse(privateKeyString),
+    )
         .update(JSON.stringify(payload))
-        .final()
+        .final();
 }
