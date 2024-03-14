@@ -21,6 +21,7 @@
         "typescript": "^5.4.2"
     },
     "workspaces": [
-        "setup"
+        "setup",
+        "common"
     ]
 }

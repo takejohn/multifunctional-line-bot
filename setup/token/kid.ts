@@ -1,3 +1,4 @@
+import { database } from 'common';
 import { Interaction } from './interaction';
 
 export interface AssertionSigningKey {
@@ -14,7 +15,10 @@ export async function createAssertionSigningKey(
     interaction: Interaction,
 ): Promise<AssertionSigningKey> {
     const { publicKey, privateKey } = await generateKeyPair();
-    const kid = await interaction.getKid(publicKey);
+    const [kid] = await Promise.all([
+        interaction.getKid(publicKey),
+        database.insertPrivateKey(privateKey),
+    ]);
     return { privateKey, kid };
 }
 

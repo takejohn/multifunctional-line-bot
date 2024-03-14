@@ -1,9 +1,9 @@
-import { mkdir, writeFile } from 'fs/promises';
 import * as readline from 'readline/promises';
 import { createAssertionSigningKey } from './token/kid';
 import { Interaction } from './token/interaction';
 import { generateJwt } from './token/jwt';
 import { issueChannelAccessTokenV2_1 } from './token/api';
+import { database } from '../common/index';
 
 class CliInteraction implements Interaction {
     private readonly rl = readline.createInterface(
@@ -41,9 +41,5 @@ class CliInteraction implements Interaction {
     const token = await issueChannelAccessTokenV2_1(clientAssertion);
     console.log(token);
     interaction.close();
+    await database.close();
 })();
-
-async function savePublicKey(publicKeyString: string) {
-    await mkdir('./.secrets/', { recursive: true });
-    await writeFile('./.secrets/public.key', publicKeyString);
-}
