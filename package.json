@@ -6,7 +6,7 @@
   "repository": "https://github.com/takejohn/multifunctional-line-bot.git",
   "author": "Takejohn (https://github.com/takejohn)",
   "license": "MIT",
-  "private": false,
+  "private": true,
   "type": "module",
   "scripts": {
     "start": "npx tsx ."
@@ -18,5 +18,8 @@
     "@types/node": "^20.11.20",
     "tsx": "^4.7.1",
     "typescript": "^5.4.2"
-  }
+  },
+  "workspaces": [
+    "setup"
+  ]
 }
