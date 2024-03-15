@@ -2,7 +2,10 @@ import * as readline from 'readline/promises';
 import { createAssertionSigningKey } from 'common/token/kid';
 import { database } from 'common';
 
-async function getKid(rl: readline.Interface, publicKeyString: string): Promise<string> {
+async function getKid(
+    rl: readline.Interface,
+    publicKeyString: string,
+): Promise<string> {
     console.log(
         'LINE Developers コンソール (https://developers.line.biz/console/) に公開鍵を登録し、取得した kid を入力してください。',
     );
@@ -17,17 +20,16 @@ async function getChannelId(rl: readline.Interface): Promise<string> {
     return await rl.question('> ');
 }
 
-(async function () {
-    const rl = readline.createInterface(
-        process.stdin,
-        process.stdout,
+export async function main() {
+    const rl = readline.createInterface(process.stdin, process.stdout);
+    const { privateKey, kid } = await createAssertionSigningKey(
+        async (publicKeyString) => await getKid(rl, publicKeyString),
     );
-    const { privateKey, kid } =
-        await createAssertionSigningKey(async (publicKeyString) => await getKid(rl, publicKeyString));
     await database.setStaticChannelInfo({
         channel_id: await getChannelId(rl),
         private_key: privateKey,
-        kid
+        kid,
     });
     await database.close();
-})();
+    rl.close();
+}

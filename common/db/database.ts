@@ -28,7 +28,7 @@ async function get(sql: string, params?: any): Promise<any> {
 }
 
 export async function close(): Promise<void> {
-    return resolvedWithThis((callback) => db.close(callback));
+    return resolvedWithVoid((callback) => db.close(callback));
 }
 
 async function createStaticChannelInfoTable(): Promise<void> {
@@ -42,7 +42,7 @@ async function createStaticChannelInfoTable(): Promise<void> {
 export async function getStaticChannelInfo(): Promise<
     StaticChannelInfo | undefined
 > {
-    await createChannelAccessTokenTable();
+    await createStaticChannelInfoTable();
     return await get(
         'SELECT channel_id, private_key, kid FROM static_channel_info;',
     );
@@ -91,6 +91,20 @@ async function createChannelAccessTokenTable() {
         expires_in INTEGER,
         key_id TEXT
     );`);
+}
+
+function resolvedWithVoid(
+    executor: (callback: (err: Error | null) => void) => void,
+): Promise<void> {
+    return new Promise((resolve, reject) => {
+        executor((err) => {
+            if (err == null) {
+                resolve();
+            } else {
+                reject(err);
+            }
+        })
+    })
 }
 
 function resolvedWithThis<T>(

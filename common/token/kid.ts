@@ -8,7 +8,9 @@ interface KeyStringPair {
     privateKey: string;
 }
 
-export async function createAssertionSigningKey(kidGetter: (publicKey: string) => Promise<string>): Promise<AssertionSigningKey> {
+export async function createAssertionSigningKey(
+    kidGetter: (publicKey: string) => Promise<string>,
+): Promise<AssertionSigningKey> {
     const { publicKey, privateKey } = await generateKeyPair();
     const kid = await kidGetter(publicKey);
     const result = { privateKey, kid };
