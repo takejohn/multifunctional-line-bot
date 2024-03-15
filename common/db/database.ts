@@ -103,8 +103,8 @@ function resolvedWithVoid(
             } else {
                 reject(err);
             }
-        })
-    })
+        });
+    });
 }
 
 function resolvedWithThis<T>(
