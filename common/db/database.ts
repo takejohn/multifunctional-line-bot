@@ -2,7 +2,7 @@ import { Database, RunResult } from 'sqlite3';
 
 const db = new Database('database.db');
 
-interface StaticChannelInfo {
+export interface StaticChannelInfo {
     channel_id: string;
     private_key: string;
     kid: string;
@@ -68,8 +68,10 @@ export async function getChannelAccessToken(): Promise<ChannelAccessTokenRecord>
 export async function updateChannelAccessToken(
     record: ChannelAccessTokenRecord,
 ) {
+    await createChannelAccessTokenTable();
+    await run('DELETE FROM static_channel_info;');
     await run(
-        `INSERT OR REPLACE INTO channel_access_token(
+        `INSERT INTO channel_access_token(
             access_token,
             issue_date,
             expires_in,

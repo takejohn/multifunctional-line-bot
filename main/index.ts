@@ -1,3 +1,6 @@
+import { TokenManager } from './token';
+
 export async function main(): Promise<void> {
-    console.log('Hello, world!');
+    const accessManager = new TokenManager();
+    console.log(await accessManager.issueToken(10));
 }

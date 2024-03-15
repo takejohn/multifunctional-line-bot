@@ -15,12 +15,21 @@ interface Payload {
     token_exp: number;
 }
 
+/**
+ * @param channelId チャネル ID
+ * @param exp 秒単位での JWT の有効期間 (最大 30 分)
+ * @param tokenExp 秒単位でのチャネルアクセストークンの有効期間 (最大 30 日)
+ * @returns
+ */
 export async function generateJwt(
     channelId: string,
     { privateKey, kid }: AssertionSigningKey,
-) {
+    exp: number,
+    tokenExp: number,
+): Promise<string> {
     const header = createHeader(kid);
-    const payload = createPayload(channelId);
+    const now = Math.floor(Date.now() / 1000);
+    const payload = createPayload(channelId, now, exp, tokenExp);
     return await createSignature(header, payload, privateKey);
 }
 
@@ -32,13 +41,18 @@ function createHeader(kid: string): Header {
     };
 }
 
-function createPayload(channelId: string): Payload {
+function createPayload(
+    channelId: string,
+    now: number,
+    exp: number,
+    tokenExp: number,
+): Payload {
     return {
         iss: channelId,
         sub: channelId,
         aud: 'https://api.line.me/',
-        exp: Math.floor(new Date().getTime() / 1000) + 60 * 30,
-        token_exp: 60, // TODO: 有効期間を設定できるように
+        exp: now + exp,
+        token_exp: tokenExp,
     };
 }
 
@@ -47,13 +61,15 @@ async function createSignature(
     payload: Payload,
     privateKeyString: string,
 ) {
-    return await JWS.createSign(
-        {
-            format: 'compact',
-            fields: header,
-        },
-        JSON.parse(privateKeyString),
-    )
-        .update(JSON.stringify(payload))
-        .final();
+    return String(
+        await JWS.createSign(
+            {
+                format: 'compact',
+                fields: header,
+            },
+            JSON.parse(privateKeyString),
+        )
+            .update(JSON.stringify(payload))
+            .final(),
+    );
 }
