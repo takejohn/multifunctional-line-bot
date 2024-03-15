@@ -34,7 +34,8 @@ export class TokenManager {
     async issueToken(
         expirationTime: number,
     ): Promise<channelAccessToken.IssueChannelAccessTokenResponse> {
-        const { channel_id, private_key, kid } = await this.staticChannelInfoPromise;
+        const { channel_id, private_key, kid } =
+            await this.staticChannelInfoPromise;
         const jwt = await token.generateJwt(
             channel_id,
             {
