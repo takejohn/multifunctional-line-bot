@@ -5,10 +5,11 @@
 ```mermaid
 erDiagram
 
-database ||--o| assertion_signing_key : ""
-assertion_signing_key ||--o| channel_access_token : ""
+database ||--o| static_channel_info : ""
+static_channel_info ||--o| channel_access_token : ""
 
-assertion_signing_key {
+static_channel_info {
+    TEXT channel_id
     TEXT private_key
     TEXT kid
 }

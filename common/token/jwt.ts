@@ -1,5 +1,4 @@
 import { JWS } from 'node-jose';
-import { Interaction } from './interaction';
 import { AssertionSigningKey } from './kid';
 
 interface Header {
@@ -17,11 +16,11 @@ interface Payload {
 }
 
 export async function generateJwt(
-    interaction: Interaction,
+    channelId: string,
     { privateKey, kid }: AssertionSigningKey,
 ) {
     const header = createHeader(kid);
-    const payload = createPayload(await interaction.getChannelId());
+    const payload = createPayload(channelId);
     return await createSignature(header, payload, privateKey);
 }
 

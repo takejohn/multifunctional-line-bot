@@ -1,7 +1,12 @@
 import { Database, RunResult } from 'sqlite3';
-import { AssertionSigningKey } from '../token/kid';
 
 const db = new Database('database.db');
+
+interface StaticChannelInfo {
+    channel_id: string;
+    private_key: string;
+    kid: string;
+}
 
 interface ChannelAccessTokenRecord {
     access_token: string;
@@ -26,34 +31,31 @@ export async function close(): Promise<void> {
     return resolvedWithThis((callback) => db.close(callback));
 }
 
-export async function getAssertionSigningKey(): Promise<
-    AssertionSigningKey | undefined
-> {
-    await run(`CREATE TABLE IF NOT EXISTS assertion_signing_key(
+async function createStaticChannelInfoTable(): Promise<void> {
+    await run(`CREATE TABLE IF NOT EXISTS static_channel_info(
+        channel_id TEXT,
         private_key TEXT,
         kid TEXT
     );`);
-    const row = await get(
-        'SELECT private_key, kid FROM assertion_signing_key;',
-    );
-    if (row != null) {
-        return;
-    }
-    return {
-        privateKey: row.private_key,
-        kid: row.kid,
-    };
 }
 
-export async function insertAssertionSigningKey(
-    record: AssertionSigningKey,
+export async function getStaticChannelInfo(): Promise<
+    StaticChannelInfo | undefined
+> {
+    await createChannelAccessTokenTable();
+    return await get(
+        'SELECT channel_id, private_key, kid FROM static_channel_info;',
+    );
+}
+
+export async function setStaticChannelInfo(
+    channel: StaticChannelInfo,
 ): Promise<void> {
-    if ((await getAssertionSigningKey()) != null) {
-        throw new Error('assertion signing key is already has been inserted');
-    }
+    await createStaticChannelInfoTable();
+    await run('DELETE FROM static_channel_info;');
     await run(
-        'INSERT INTO assertion_signing_key(private_key, kid) VALUES (?, ?);',
-        [record.privateKey, record.kid],
+        'INSERT INTO static_channel_info(channel_id, private_key, kid) VALUES (?, ?, ?);',
+        [channel.channel_id, channel.private_key, channel.kid],
     );
 }
 
