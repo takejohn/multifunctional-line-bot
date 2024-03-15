@@ -33,7 +33,9 @@ export async function getAssertionSigningKey(): Promise<
         private_key TEXT,
         kid TEXT
     );`);
-    const row = await get('SELECT private_key, kid FROM assertion_signing_key;');
+    const row = await get(
+        'SELECT private_key, kid FROM assertion_signing_key;',
+    );
     if (row != null) {
         return;
     }
