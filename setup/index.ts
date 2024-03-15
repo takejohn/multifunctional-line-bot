@@ -20,6 +20,13 @@ async function getChannelId(rl: readline.Interface): Promise<string> {
     return await rl.question('> ');
 }
 
+async function getChannelSecret(rl: readline.Interface): Promise<string> {
+    console.log(
+        'LINE Developers コンソール (https://developers.line.biz/console/) で取得したチャネルシークレットを入力してください。',
+    );
+    return await rl.question('> ');
+}
+
 export async function main() {
     const rl = readline.createInterface(process.stdin, process.stdout);
     const { privateKey, kid } = await createAssertionSigningKey(
@@ -27,9 +34,9 @@ export async function main() {
     );
     await database.setStaticChannelInfo({
         channel_id: await getChannelId(rl),
+        channel_secret: await getChannelSecret(rl),
         private_key: privateKey,
         kid,
     });
-    await database.close();
     rl.close();
 }

@@ -4,6 +4,7 @@ const db = new Database('database.db');
 
 export interface StaticChannelInfo {
     channel_id: string;
+    channel_secret: string;
     private_key: string;
     kid: string;
 }
@@ -34,6 +35,7 @@ export async function close(): Promise<void> {
 async function createStaticChannelInfoTable(): Promise<void> {
     await run(`CREATE TABLE IF NOT EXISTS static_channel_info(
         channel_id TEXT,
+        channel_secret TEXT,
         private_key TEXT,
         kid TEXT
     );`);
@@ -44,7 +46,7 @@ export async function getStaticChannelInfo(): Promise<
 > {
     await createStaticChannelInfoTable();
     return await get(
-        'SELECT channel_id, private_key, kid FROM static_channel_info;',
+        'SELECT channel_id, channel_secret, private_key, kid FROM static_channel_info;',
     );
 }
 
@@ -54,8 +56,18 @@ export async function setStaticChannelInfo(
     await createStaticChannelInfoTable();
     await run('DELETE FROM static_channel_info;');
     await run(
-        'INSERT INTO static_channel_info(channel_id, private_key, kid) VALUES (?, ?, ?);',
-        [channel.channel_id, channel.private_key, channel.kid],
+        `INSERT INTO static_channel_info(
+            channel_id,
+            channel_secret,
+            private_key,
+            kid
+        ) VALUES (?, ?, ?, ?);`,
+        [
+            channel.channel_id,
+            channel.channel_secret,
+            channel.private_key,
+            channel.kid,
+        ],
     );
 }
 

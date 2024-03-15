@@ -16,9 +16,9 @@ async function getStaticChannelInfo() {
     return info;
 }
 
-const staticChannelInfoPromise = getStaticChannelInfo();
-
 export class TokenManager {
+    private readonly staticChannelInfoPromise = getStaticChannelInfo();
+
     private readonly jwtExpirationTime: number;
 
     private readonly channelAccessTokenClient: channelAccessToken.ChannelAccessTokenClient;
@@ -34,7 +34,7 @@ export class TokenManager {
     async issueToken(
         expirationTime: number,
     ): Promise<channelAccessToken.IssueChannelAccessTokenResponse> {
-        const { channel_id, private_key, kid } = await staticChannelInfoPromise;
+        const { channel_id, private_key, kid } = await this.staticChannelInfoPromise;
         const jwt = await token.generateJwt(
             channel_id,
             {

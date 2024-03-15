@@ -10,6 +10,7 @@ static_channel_info ||--o| channel_access_token : ""
 
 static_channel_info {
     TEXT channel_id
+    TEXT channel_secret
     TEXT private_key
     TEXT kid
 }
