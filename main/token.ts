@@ -8,12 +8,20 @@ export interface TokenManagerOptions {
     apiBaseURL?: string;
 }
 
+async function getStaticChannelInfo() {
+    const info = await database.getStaticChannelInfo();
+    if (info == null) {
+        throw new Error('チャネルの情報が設定されていません');
+    }
+    return info;
+}
+
+const staticChannelInfoPromise = getStaticChannelInfo();
+
 export class TokenManager {
     private readonly jwtExpirationTime: number;
 
     private readonly channelAccessTokenClient: channelAccessToken.ChannelAccessTokenClient;
-
-    private staticChannelInfo: database.StaticChannelInfo | undefined;
 
     constructor(options?: TokenManagerOptions) {
         this.jwtExpirationTime = options?.jwtExpirationTime ?? 10;
@@ -23,24 +31,10 @@ export class TokenManager {
             });
     }
 
-    private async getStaticChannelInfo() {
-        const currentInfo = this.staticChannelInfo;
-        if (currentInfo != null) {
-            return currentInfo;
-        }
-        const newInfo = await database.getStaticChannelInfo();
-        if (newInfo == null) {
-            throw new Error('チャネルの情報が設定されていません');
-        }
-        this.staticChannelInfo = newInfo;
-        return newInfo;
-    }
-
     async issueToken(
         expirationTime: number,
     ): Promise<channelAccessToken.IssueChannelAccessTokenResponse> {
-        const { channel_id, private_key, kid } =
-            await this.getStaticChannelInfo();
+        const { channel_id, private_key, kid } = await staticChannelInfoPromise;
         const jwt = await token.generateJwt(
             channel_id,
             {

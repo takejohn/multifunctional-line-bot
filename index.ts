@@ -3,8 +3,12 @@ import main from 'main';
 import common from 'common';
 
 (async () => {
-    if ((await common.database.getStaticChannelInfo()) == null) {
-        await setup.main();
+    try {
+        if ((await common.database.getStaticChannelInfo()) == null) {
+            await setup.main();
+        }
+        await main.main();
+    } finally {
+        common.database.close();
     }
-    await main.main();
 })();
