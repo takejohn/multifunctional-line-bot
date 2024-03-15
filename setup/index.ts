@@ -1,9 +1,9 @@
 import * as readline from 'readline/promises';
-import { createAssertionSigningKey } from './token/kid';
-import { Interaction } from './token/interaction';
-import { generateJwt } from './token/jwt';
-import { issueChannelAccessTokenV2_1 } from './token/api';
-import { database } from '../common/index';
+import { createAssertionSigningKey } from 'common/token/kid';
+import { Interaction } from 'common/token/interaction';
+import { generateJwt } from 'common/token/jwt';
+import { issueChannelAccessTokenV2_1 } from 'common/token/api';
+import { database } from 'common';
 
 class CliInteraction implements Interaction {
     private readonly rl = readline.createInterface(

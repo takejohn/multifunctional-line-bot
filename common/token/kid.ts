@@ -15,11 +15,10 @@ export async function createAssertionSigningKey(
     interaction: Interaction,
 ): Promise<AssertionSigningKey> {
     const { publicKey, privateKey } = await generateKeyPair();
-    const [kid] = await Promise.all([
-        interaction.getKid(publicKey),
-        database.insertPrivateKey(privateKey),
-    ]);
-    return { privateKey, kid };
+    const kid = await interaction.getKid(publicKey);
+    const result = { privateKey, kid };
+    database.insertAssertionSigningKey(result);
+    return result;
 }
 
 async function generateKeyPair(): Promise<KeyStringPair> {
