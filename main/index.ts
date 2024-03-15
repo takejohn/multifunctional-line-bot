@@ -1,7 +1,8 @@
-import { middleware } from '@line/bot-sdk';
+import { middleware, webhook } from '@line/bot-sdk';
 import express from 'express';
 import { KeyTokenPair, TokenManager } from './token';
 import { Server } from 'http';
+import { EventHandler } from './events';
 
 interface Context {
     server: Server;
@@ -19,7 +20,8 @@ export async function main(): Promise<void> {
         channelSecret: await tokenManager.getChannelSecret(),
     });
     const app = express();
-    app.post('/webhook', lineMiddleware);
+    const eventHandler = new EventHandler(token.accessToken);
+    app.post('/webhook', lineMiddleware, eventHandler.middleware());
     const port = 45110;
     const server = app.listen(port);
     const context: Context = { server, tokenManager, token };
