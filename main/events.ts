@@ -32,12 +32,15 @@ export class EventHandler {
     private async handle(event: webhook.Event) {
         if (isTextMessageEvent(event)) {
             if (event.message.text == '/ping') {
-                this.client.replyMessage({
+                const start = performance.now();
+                await this.client.getWebhookEndpoint();
+                const end = performance.now();
+                await this.client.replyMessage({
                     replyToken: event.replyToken,
                     messages: [
                         {
                             type: 'text',
-                            text: 'pong!',
+                            text: `Ping: ${Math.floor(end - start)} ms`,
                         },
                     ],
                 });
