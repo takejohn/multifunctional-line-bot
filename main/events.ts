@@ -31,15 +31,17 @@ export class EventHandler {
 
     private async handle(event: webhook.Event) {
         if (isTextMessageEvent(event)) {
-            this.client.replyMessage({
-                replyToken: event.replyToken,
-                messages: [
-                    {
-                        type: 'text',
-                        text: event.message.text,
-                    },
-                ],
-            });
+            if (event.message.text == '/ping') {
+                this.client.replyMessage({
+                    replyToken: event.replyToken,
+                    messages: [
+                        {
+                            type: 'text',
+                            text: 'pong!',
+                        },
+                    ],
+                });
+            }
         }
     }
 }
